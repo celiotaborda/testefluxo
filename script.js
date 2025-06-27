@@ -86,6 +86,9 @@ let codigos = [
 ];
 let fluxoCaixa = [];
 
+// URL do backend Flask hospedado
+const URL_BACKEND = 'https://SEU-BACKEND.onrender.com'; // Substitua pela URL real após deploy
+
 // Mapeamento de origem dos códigos
 const origemCodigos = {
     // Receitas
@@ -224,11 +227,11 @@ function processQueue() {
 async function carregarCadastros() {
     mostrarCarregamento();
     try {
-        const bancosResp = await fetchWithQueue('/api/bancos');
+        const bancosResp = await fetchWithQueue(`${URL_BACKEND}/api/bancos`);
         bancos = bancosResp;
-        const safrasResp = await fetchWithQueue('/api/safras');
+        const safrasResp = await fetchWithQueue(`${URL_BACKEND}/api/safras`);
         safras = safrasResp;
-        const codigosResp = await fetchWithQueue('/api/codigos');
+        const codigosResp = await fetchWithQueue(`${URL_BACKEND}/api/codigos`);
         codigos = codigosResp;
     } finally {
         esconderCarregamento();
@@ -239,7 +242,7 @@ async function carregarCadastros() {
 async function carregarFluxoCaixa() {
     mostrarCarregamento();
     try {
-        const resp = await fetchWithQueue('/api/fluxo');
+        const resp = await fetchWithQueue(`${URL_BACKEND}/api/fluxo`);
         fluxoCaixa = resp;
     } finally {
         esconderCarregamento();
@@ -250,7 +253,7 @@ async function carregarFluxoCaixa() {
 async function adicionarBanco() {
     const banco = document.getElementById('banco-input').value.trim();
     if (banco && !bancos.includes(banco)) {
-        await fetch('/api/bancos', {
+        await fetch(`${URL_BACKEND}/api/bancos`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ banco })
@@ -266,7 +269,7 @@ async function adicionarBanco() {
 async function adicionarSafra() {
     const safra = document.getElementById('safra-input').value.trim();
     if (safra && !safras.includes(safra)) {
-        await fetch('/api/safras', {
+        await fetch(`${URL_BACKEND}/api/safras`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ safra })
@@ -287,7 +290,7 @@ async function adicionarCodigo() {
         return;
     }
     if (codigo && !codigos.some(c => (typeof c === 'object' ? c.codigo : c) === codigo)) {
-        await fetch('/api/codigos', {
+        await fetch(`${URL_BACKEND}/api/codigos`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ codigo, origem })
@@ -302,19 +305,19 @@ async function adicionarCodigo() {
 
 // Remover banco via API
 async function removerBanco(banco) {
-    await fetch(`/api/bancos/${encodeURIComponent(banco)}`, { method: 'DELETE' });
+    await fetch(`${URL_BACKEND}/api/bancos/${encodeURIComponent(banco)}`, { method: 'DELETE' });
     bancos = bancos.filter(b => b !== banco); // Atualiza localmente
     atualizarListasCadastros();
 }
 // Remover safra via API
 async function removerSafra(safra) {
-    await fetch(`/api/safras/${encodeURIComponent(safra)}`, { method: 'DELETE' });
+    await fetch(`${URL_BACKEND}/api/safras/${encodeURIComponent(safra)}`, { method: 'DELETE' });
     safras = safras.filter(s => s !== safra); // Atualiza localmente
     atualizarListasCadastros();
 }
 // Remover código via API
 async function removerCodigo(codigo) {
-    await fetch(`/api/codigos/${encodeURIComponent(codigo)}`, { method: 'DELETE' });
+    await fetch(`${URL_BACKEND}/api/codigos/${encodeURIComponent(codigo)}`, { method: 'DELETE' });
     codigos = codigos.filter(c => (typeof c === 'object' ? c.codigo : c) !== codigo); // Atualiza localmente
     atualizarListasCadastros();
 }
@@ -455,7 +458,7 @@ function editarLinhaFluxo(idx) {
 async function salvarEdicaoLinha(idx) {
     linhaEditando = null;
     // Persistir a edição no backend
-    await fetch(`/api/fluxo/${idx}`, {
+    await fetch(`${URL_BACKEND}/api/fluxo/${idx}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(fluxoCaixa[idx])
@@ -952,7 +955,7 @@ async function adicionarFluxoDoInput() {
         alert('Preencha todos os campos para adicionar o lançamento.');
         return;
     }
-    await fetch('/api/fluxo', {
+    await fetch(`${URL_BACKEND}/api/fluxo`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ Safra: safra, nData, Banco, Numero, Historico, EntradaSaida, Valor, Codigo })
