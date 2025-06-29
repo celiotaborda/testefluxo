@@ -2,7 +2,22 @@ const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
 const app = express();
-app.use(cors());
+
+const allowedOrigins = [
+  'https://seunits.com',
+  'https://celiotaborda.github.io'
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Permite requisições sem origin (ex: ferramentas locais) ou dos domínios permitidos
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 app.use(express.json());
 
 const bancosFile = 'bancos.csv';
