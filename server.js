@@ -32,24 +32,24 @@ function writeCSV(file, arr) {
     fs.writeFileSync(file, arr.join('\n'));
 }
 
-app.get('/bancos', (req, res) => res.json(readCSV(bancosFile)));
-app.post('/bancos', (req, res) => {
+app.get('/api/bancos', (req, res) => res.json(readCSV(bancosFile)));
+app.post('/api/bancos', (req, res) => {
     const bancos = readCSV(bancosFile);
     if (!bancos.includes(req.body.banco)) bancos.push(req.body.banco);
     writeCSV(bancosFile, bancos);
     res.json(bancos);
 });
 
-app.get('/safras', (req, res) => res.json(readCSV(safrasFile)));
-app.post('/safras', (req, res) => {
+app.get('/api/safras', (req, res) => res.json(readCSV(safrasFile)));
+app.post('/api/safras', (req, res) => {
     const safras = readCSV(safrasFile);
     if (!safras.includes(req.body.safra)) safras.push(req.body.safra);
     writeCSV(safrasFile, safras);
     res.json(safras);
 });
 
-app.get('/codigos', (req, res) => res.json(readCSV(codigosFile)));
-app.post('/codigos', (req, res) => {
+app.get('/api/codigos', (req, res) => res.json(readCSV(codigosFile)));
+app.post('/api/codigos', (req, res) => {
     const codigos = readCSV(codigosFile);
     if (!codigos.includes(req.body.codigo)) codigos.push(req.body.codigo);
     writeCSV(codigosFile, codigos);
