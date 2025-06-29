@@ -205,7 +205,8 @@ function processQueue() {
     while (activeRequests < MAX_CONCURRENT && requestQueue.length) {
         activeRequests++;
         const { url, resolve } = requestQueue.shift();
-        fetch(`${API_BASE}${url}`)
+        const finalUrl = url.startsWith('http') ? url : `${API_BASE}${url}`;
+        fetch(finalUrl)
             .then(res => res.json())
             .then(data => resolve(data))
             .finally(() => {
