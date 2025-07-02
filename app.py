@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, send_from_directory
 import csv
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, origins=["https://seunits.com", "https://celiotaborda.github.io"])
 DATA_FILE = 'fluxo_dados.csv'
 CAMPOS = ['Safra', 'nData', 'Banco', 'Numero', 'Historico', 'EntradaSaida', 'Valor', 'Codigo']
 BANCOS_FILE = 'bancos.csv'
